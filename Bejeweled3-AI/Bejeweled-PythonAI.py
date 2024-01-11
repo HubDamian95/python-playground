@@ -64,9 +64,6 @@ class BejeweledMove:
         return 31 * self.x + 17 * self.y
 
 class BejeweledScreenReader:
-    
-
-
     def get_bejeweled_window_rect(self):
         # Logic to find and return the Bejeweled game window rectangle
         pass
