@@ -1,6 +1,6 @@
 import random
 from enum import Enum
-from PIL import ImageGrab, Image, ImageColor
+from PIL import ImageGrab, Image, ImageColor, ImageStat
 import pygetwindow as gw
 from collections import Counter
 
@@ -25,13 +25,13 @@ class BejeweledBoard:
             self.tile_count = tile_count
             self.squares = [[None for _ in range(tile_count)] for _ in range(tile_count)]
 
-    for x in range(bejeweled_board.tile_count):
-        for y in range(bejeweled_board.tile_count):
-            tile_image = extract_tile_image(image, x, y)  # Implement this method
-            tile_code = analyze_tile(tile_image)  # Implement this method
-            bejeweled_board.set_tile(x, y, tile_code)
+#    for x in range(bejeweled_board.tile_count):
+#        for y in range(bejeweled_board.tile_count):
+#            tile_image = extract_tile_image(image, x, y)  # Implement this method
+#            tile_code = analyze_tile(tile_image)  # Implement this method
+#            bejeweled_board.set_tile(x, y, tile_code)
 
-    return bejeweled_board
+#    return bejeweled_board
 
     def set_tile(self, x, y, tile_code):
         self.squares[x][y] = BejeweledTile(tile_code)
@@ -177,16 +177,63 @@ class PlayBejeweled:
 
 
 def get_bejeweled_window():
-    # Logic to find and return the Bejeweled game window
-    pass
+    windows = gw.getWindowsWithTitle('Bejeweled')  # Replace 'Bejeweled' with the exact window title, if different
+    for window in windows:
+        if 'Bejeweled' in window.title:  # This check can be more specific based on your requirements
+            return window
+    return None  # Return None if the window is not found
 
-def extract_tile_image(image, x, y):
-    # Extract and return the image for the tile at position (x, y)
-    pass
+def extract_tile_image(full_image, x, y, tile_size):
+    """
+    Extracts and returns the image for the tile at position (x, y) on the game board.
+
+    :param full_image: The full image of the game board.
+    :param x: The x-coordinate (column) of the tile on the game board.
+    :param y: The y-coordinate (row) of the tile on the game board.
+    :param tile_size: The size of each tile in pixels.
+    :return: A PIL Image object representing the tile.
+    """
+
+    left = x * tile_size
+    top = y * tile_size
+    right = left + tile_size
+    bottom = top + tile_size
+
+    return full_image.crop((left, top, right, bottom))
 
 def analyze_tile(tile_image):
-    # Analyze the tile image and return the corresponding tile code
-    pass
+    """
+    Analyzes the tile image and returns a tile code based on its color.
+
+    :param tile_image: A PIL Image object representing the tile.
+    :return: An integer or symbolic code representing the tile type.
+    """
+
+    # Calculate the average color of the tile
+    average_color = ImageStat.Stat(tile_image).mean
+    # Convert to RGB
+    average_color_rgb = tuple(int(c) for c in average_color[:3])
+
+    # Compare the average color with known tile colors
+    # Here, you should have a predefined mapping of colors to tile types
+    # For example: tile_colors = {(255, 0, 0): 'RED_TILE', (0, 255, 0): 'GREEN_TILE', ...}
+    for known_color, tile_type in tile_colors.items():
+        if _is_color_match(average_color_rgb, known_color):
+            return tile_type
+
+    # If no match is found, return a default value or raise an error
+    return 'UNKNOWN'
+
+def _is_color_match(color1, color2, tolerance=30):
+    """
+    Helper function to determine if two colors are similar within a tolerance.
+
+    :param color1: First color as an RGB tuple.
+    :param color2: Second color as an RGB tuple.
+    :param tolerance: The tolerance level for color matching.
+    :return: Boolean indicating if the colors match.
+    """
+    return all(abs(c1 - c2) <= tolerance for c1, c2 in zip(color1, color2))
 
 
 game = PlayBejeweled()
