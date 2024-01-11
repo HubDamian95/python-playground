@@ -17,13 +17,10 @@ class BejeweledTile:
         self.normalised_tile_code = None
 
 class BejeweledBoard:
-    def __init__(self, squares=None, tile_count=None):
-        if squares is not None:
-            self.tile_count = len(squares)
-            self.squares = [row[:] for row in squares]
-        else:
-            self.tile_count = tile_count
-            self.squares = [[None for _ in range(tile_count)] for _ in range(tile_count)]
+    # ...
+    def normalize(self):
+        # Implement the normalization logic
+        pass
 
 #    for x in range(bejeweled_board.tile_count):
 #        for y in range(bejeweled_board.tile_count):
@@ -82,6 +79,12 @@ class BejeweledScreenReader:
         image = image.convert('RGB')  # Convert to 16bpp RGB555
         self.latest_bitmap = image
 
+        def get_bejeweled_window_rect(self):
+            window = get_bejeweled_window()
+            if window is not None:
+                return window.left, window.top, window.right, window.bottom
+            return None
+        
         bejeweled_board = BejeweledBoard(self.tile_count)
         for x in range(self.tile_count):
             for y in range(self.tile_count):
@@ -174,11 +177,11 @@ class PlayBejeweled:
 
 
 def get_bejeweled_window():
-    windows = gw.getWindowsWithTitle('Bejeweled')  # Replace 'Bejeweled' with the exact window title, if different
+    windows = gw.getWindowsWithTitle('Bejeweled') 
     for window in windows:
-        if 'Bejeweled' in window.title:  # This check can be more specific based on your requirements
+        if 'Bejeweled' in window.title:  
             return window
-    return None  # Return None if the window is not found
+    return None 
 
 def extract_tile_image(full_image, x, y, tile_size):
     """
