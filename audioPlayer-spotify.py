@@ -5,7 +5,7 @@ import json
 import pyglet
 
 # Your Spotify API credentials
-client_id = "9a57eb6ade104a55aa5127989816a0fa"
+client_id = ""
 client_secret = ""
 
 # Get an access token
